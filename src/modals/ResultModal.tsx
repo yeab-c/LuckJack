@@ -4,7 +4,6 @@
  * Displays round outcome with dramatic hidden card reveal animation.
  * Features 3D flip rotation, color-coded outcomes, and slide-in animation.
  * 
- * Requirements: 10.1, 10.2, 10.3, 11.1, 11.2, 11.3, 11.5, 11.6, 17.2
  */
 
 import React, { useState, useEffect } from 'react';
