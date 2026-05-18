@@ -4,12 +4,11 @@
  * This module implements the central state reducer that handles all game actions.
  * All state updates are immutable using spread operators.
  * 
- * Requirements: 5.1-5.6, 6.1-6.5, 7.1-7.5, 9.1-9.5, 10.1-10.8, 15.2-15.6, 16.3, 16.4
  */
 
-import type { GameState, GameAction, LeaderboardEntry } from '../types/game';
+import type { GameState, GameAction, LeaderboardEntry, GameStatistics } from '../types/game';
 import { createDeck, shuffleDeck, dealCard, shouldReshuffle } from '../utils/deck';
-import { calculateHandValue, isBlackjack, isBust } from '../utils/scoring';
+import { isBust } from '../utils/scoring';
 import { resolveRound, shouldDealerHit } from '../utils/resolution';
 
 /**
