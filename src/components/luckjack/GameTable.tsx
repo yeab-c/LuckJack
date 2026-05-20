@@ -5,8 +5,10 @@ import { PlayingCard } from "./Card";
 export function GameTable() {
   const { playerCards, dealerCards, dealerRevealed, phase, shoe } = useGame();
 
-  const visiblePlayer = playerCards.slice(1);
-  const visibleValue = handValue(visiblePlayer);
+  // Show full hand value during result phase, otherwise show visible cards only
+  const displayValue = phase === "result" || phase === "dealerTurn" 
+    ? handValue(playerCards) 
+    : handValue(playerCards.slice(1));
 
   return (
     <section className="bg-felt-deep rounded-3xl border border-gold/40 px-4 py-6 sm:px-8 sm:py-10 min-h-[420px] sm:min-h-[480px] relative overflow-hidden">
@@ -17,13 +19,13 @@ export function GameTable() {
           <h3 className="font-serif-display text-gold text-base sm:text-lg">Dealer</h3>
           {dealerCards.length > 0 && (
             <span className="text-card-white font-mono text-sm sm:text-base">
-              {dealerRevealed ? handValue(dealerCards) : "?"}
+              {dealerRevealed ? handValue(dealerCards) : handValue(dealerCards.slice(1))}
             </span>
           )}
         </div>
         <div className="flex gap-2 sm:gap-3 justify-center min-h-[84px] sm:min-h-[112px] lg:min-h-[140px]">
           {dealerCards.map((c, i) => (
-            <PlayingCard key={c.id} card={c} hidden={!dealerRevealed} index={i} />
+            <PlayingCard key={c.id} card={c} hidden={i === 0 && !dealerRevealed} index={i} />
           ))}
         </div>
       </div>
@@ -35,13 +37,16 @@ export function GameTable() {
           <h3 className="font-serif-display text-gold text-base sm:text-lg">You</h3>
           {playerCards.length > 0 && (
             <span className="text-card-white font-mono text-sm sm:text-base">
-              {visibleValue} <span className="text-muted-foreground text-xs">(+ hidden)</span>
+              {displayValue}
+              {phase === "playerTurn" && playerCards.length > 0 && (
+                <span className="text-muted-foreground text-xs ml-1">(+ hidden)</span>
+              )}
             </span>
           )}
         </div>
         <div className="flex gap-2 sm:gap-3 justify-center min-h-[84px] sm:min-h-[112px] lg:min-h-[140px]">
           {playerCards.map((c, i) => (
-            <PlayingCard key={c.id} card={c} hidden={i === 0 && phase !== "result"} index={i} />
+            <PlayingCard key={c.id} card={c} hidden={i === 0 && phase !== "result" && phase !== "dealerTurn"} index={i} />
           ))}
         </div>
         {playerCards.length > 0 && phase === "playerTurn" && (

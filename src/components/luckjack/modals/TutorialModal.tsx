@@ -3,10 +3,10 @@ import { LJButton } from "../LJButton";
 
 const STEPS = [
   { title: "Place Your Bet", body: "Pick chip denominations (5, 25, 100, 500) to build your wager, then hit Deal." },
-  { title: "The Hidden Card", body: "Your FIRST card stays face-down until the round ends. You play without knowing it — that's the LuckJack twist." },
-  { title: "Hit or Stand", body: "Hit to draw another card. Stand to lock in. Bust if your visible hand + a guaranteed Ace-as-1 still goes over 21." },
-  { title: "Dealer Rules", body: "After you stand, the dealer reveals and draws until reaching 17 or higher. Dealer busts over 21." },
-  { title: "Winning", body: "Blackjack pays 3:2. Beat the dealer for 1:1. Tie is a push. Then your hidden card flips — and the truth is revealed." },
+  { title: "The Hidden Card", body: "Your FIRST card stays face down until the round ends. You play without knowing it. That is the LuckJack twist." },
+  { title: "Hit or Stand", body: "Hit to draw another card. Stand to lock in. You bust if your visible cards plus at least 1 for the hidden card go over 21." },
+  { title: "Dealer Rules", body: "After you stand, the dealer reveals their cards and draws until reaching their target. Dealer busts over 21." },
+  { title: "Winning", body: "Blackjack pays 3 to 2. Beat the dealer for 1 to 1. Tie is a push. Then your hidden card flips and the truth is revealed." },
 ];
 
 export function TutorialModal({ open, onClose }: { open: boolean; onClose: () => void }) {

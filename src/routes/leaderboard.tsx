@@ -6,7 +6,7 @@ import { LJButton } from "@/components/luckjack/LJButton";
 
 export const Route = createFileRoute("/leaderboard")({
   component: LeaderboardPage,
-  head: () => ({ meta: [{ title: "Leaderboard — LuckJack" }, { name: "description", content: "Top LuckJack sessions ranked by net gain." }] }),
+  head: () => ({ meta: [{ title: "Leaderboard - LuckJack" }, { name: "description", content: "Top LuckJack sessions ranked by net gain." }] }),
 });
 
 function LeaderboardPage() {

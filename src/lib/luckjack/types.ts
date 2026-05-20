@@ -7,7 +7,7 @@ export interface CardT {
   rank: Rank;
 }
 
-export type Phase = "betting" | "playerTurn" | "dealerTurn" | "result";
+export type Phase = "betting" | "dealing" | "playerTurn" | "dealerTurn" | "result";
 export type Outcome = "WIN" | "LOSE" | "PUSH" | "BLACKJACK" | "BUST";
 
 export interface Stats {
@@ -33,13 +33,11 @@ export interface LeaderboardEntry {
 export type AnimSpeed = "Fast" | "Normal" | "Slow";
 
 export interface Settings {
-  sound: boolean;
   animSpeed: AnimSpeed;
   startingBalance: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  sound: true,
   animSpeed: "Normal",
   startingBalance: 1000,
 };

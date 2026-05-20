@@ -7,7 +7,7 @@ import type { AnimSpeed } from "@/lib/luckjack/types";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
-  head: () => ({ meta: [{ title: "Settings — LuckJack" }, { name: "description", content: "Customize LuckJack: sound, animation speed, and starting balance." }] }),
+  head: () => ({ meta: [{ title: "Settings - LuckJack" }, { name: "description", content: "Customize LuckJack: animation speed and starting balance." }] }),
 });
 
 const SPEEDS: AnimSpeed[] = ["Fast", "Normal", "Slow"];
@@ -21,14 +21,6 @@ function SettingsPage() {
     <Layout>
       <h1 className="font-serif-display text-3xl sm:text-4xl text-gold mb-6">Settings</h1>
       <div className="max-w-xl space-y-6">
-        <Row label="Sound">
-          <button
-            onClick={() => setSettings({ ...settings, sound: !settings.sound })}
-            className={`px-4 py-2 rounded-md border-2 transition ${settings.sound ? "bg-gold text-[#0a1f0a] border-gold" : "border-gold/40 text-card-white"}`}
-          >
-            {settings.sound ? "On" : "Off"}
-          </button>
-        </Row>
         <Row label="Animation Speed">
           <div className="flex gap-2">
             {SPEEDS.map(s => (

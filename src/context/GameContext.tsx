@@ -78,7 +78,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       setLeaderboard(storage.getLeaderboard());
       setSessionStart(b);
     } catch {
-      setWarning("Storage unavailable — playing in-memory only.");
+      setWarning("Storage unavailable. Playing in memory only.");
     }
   }, []);
 
@@ -119,14 +119,33 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     if (phase !== "betting") return;
     if (bet <= 0) { setWarning("Place a bet first."); return; }
     setBalance(b => b - bet);
-    const p1 = draw();
-    const d1 = draw();
-    const d2 = draw();
-    setPlayerCards([p1]);
-    setDealerCards([d1, d2]);
     setDealerRevealed(false);
     setResult(null);
-    setPhase("playerTurn");
+    setPhase("dealing");
+    
+    // Deal cards turn by turn: Player, Dealer, Player, Dealer
+    const animDelay = ANIM_MS[settings.animSpeed];
+    
+    setTimeout(() => {
+      const p1 = draw();
+      setPlayerCards([p1]);
+      
+      setTimeout(() => {
+        const d1 = draw();
+        setDealerCards([d1]);
+        
+        setTimeout(() => {
+          const p2 = draw();
+          setPlayerCards(prev => [...prev, p2]);
+          
+          setTimeout(() => {
+            const d2 = draw();
+            setDealerCards(prev => [...prev, d2]);
+            setPhase("playerTurn");
+          }, animDelay);
+        }, animDelay);
+      }, animDelay);
+    }, animDelay);
   };
 
   const finishRound = useCallback((finalPlayer: CardT[], finalDealer: CardT[]) => {
@@ -161,35 +180,94 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const hit = () => {
     if (phase !== "playerTurn") return;
-    const c = draw();
-    const next = [...playerCards, c];
-    setPlayerCards(next);
-    // visible cards = next[1..], plus hidden minimum = 1
-    const visibleValue = handValue(next.slice(1));
-    if (visibleValue + 1 > 21) {
-      // auto-bust
-      setDealerRevealed(true);
-      setTimeout(() => finishRound(next, dealerCards), ANIM_MS[settings.animSpeed]);
+    setPhase("dealing"); // Prevent multiple hits during animation
+    
+    const animDelay = ANIM_MS[settings.animSpeed];
+    
+    // Player draws a card
+    setTimeout(() => {
+      const c = draw();
+      const next = [...playerCards, c];
+      setPlayerCards(next);
+      
+      // Check if player busts based on VISIBLE cards only (exclude first hidden card)
+      const visibleCards = next.slice(1);
+      const visibleValue = handValue(visibleCards);
+      
+      // Auto-bust only if visible cards alone exceed 21
+      if (visibleValue > 20) {
+        // Player busts - reveal dealer but DON'T show result yet
+        setDealerRevealed(true);
+        setPhase("dealerTurn");
+        
+        // Wait a moment for player to see dealer's cards before showing result
+        setTimeout(() => finishRound(next, dealerCards), animDelay * 3);
+      } else {
+        // Player didn't bust - now it's dealer's turn to hit
+        dealerTakeTurn(next, dealerCards, animDelay);
+      }
+    }, animDelay);
+  };
+
+  const dealerTakeTurn = (currentPlayerCards: CardT[], currentDealerCards: CardT[], animDelay: number) => {
+    // Randomize dealer's target between 15-20 for unpredictability
+    const dealerTarget = 15 + Math.floor(Math.random() * 6);
+    const currentValue = handValue(currentDealerCards);
+    
+    // Dealer decides whether to hit
+    const shouldHit = currentValue < dealerTarget || 
+                     (currentValue === dealerTarget && Math.random() < 0.2);
+    
+    if (shouldHit && currentValue < 21) {
+      // Dealer hits
+      setTimeout(() => {
+        const c = draw();
+        const nextDealer = [...currentDealerCards, c];
+        setDealerCards(nextDealer);
+        
+        // After dealer's card, return to player's turn
+        setTimeout(() => {
+          setPhase("playerTurn");
+        }, animDelay);
+      }, animDelay);
+    } else {
+      // Dealer stands - return to player's turn
+      setTimeout(() => {
+        setPhase("playerTurn");
+      }, animDelay);
     }
   };
 
   const stand = () => {
     if (phase !== "playerTurn") return;
     setPhase("dealerTurn");
-    setDealerRevealed(true);
-    // Dealer draws
+    // Don't reveal dealer yet - they keep playing with first card hidden
+    
+    // Player has stood - now dealer keeps hitting until they decide to stand
+    const animDelay = ANIM_MS[settings.animSpeed] * 2;
+    const dealerTarget = 15 + Math.floor(Math.random() * 6);
+    
     const work = [...dealerCards];
-    const step = () => {
-      if (handValue(work) < 17) {
+    
+    const dealerFinalTurns = () => {
+      const currentValue = handValue(work);
+      const shouldHit = currentValue < dealerTarget || 
+                       (currentValue === dealerTarget && Math.random() < 0.2);
+      
+      if (shouldHit && currentValue < 21) {
         const c = draw();
         work.push(c);
         setDealerCards([...work]);
-        setTimeout(step, ANIM_MS[settings.animSpeed]);
+        setTimeout(dealerFinalTurns, animDelay);
       } else {
-        finishRound(playerCards, work);
+        // Dealer stands - NOW reveal their first card
+        setDealerRevealed(true);
+        // Wait before showing result so player can see dealer's full hand
+        setTimeout(() => finishRound(playerCards, work), animDelay * 2);
       }
     };
-    setTimeout(step, ANIM_MS[settings.animSpeed]);
+    
+    setTimeout(dealerFinalTurns, animDelay);
   };
 
   const playAgain = () => {

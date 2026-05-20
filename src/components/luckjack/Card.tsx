@@ -30,22 +30,22 @@ export function PlayingCard({ card, hidden, flipping, index = 0, className }: Pr
         <div className={cn(
           "absolute inset-0 backface-hidden rounded-lg bg-card-white text-card-white",
           "shadow-[0_8px_20px_-5px_rgba(0,0,0,0.6)] border border-black/10",
-          "flex flex-col justify-between p-1.5 sm:p-2",
+          "flex flex-col justify-between p-1.5",
         )}
           style={{ backgroundColor: "#FAFAFA" }}
         >
           {card && (
             <>
-              <div className={cn("text-[10px] sm:text-sm lg:text-base font-bold leading-none", isRed ? "text-crimson" : "text-black")}>
+              <div className={cn("text-xs font-bold leading-none", isRed ? "text-crimson" : "text-black")}>
                 <div>{card.rank}</div>
-                <div className="text-xs sm:text-base lg:text-lg">{card.suit}</div>
+                <div className="text-sm">{card.suit}</div>
               </div>
-              <div className={cn("text-2xl sm:text-4xl lg:text-5xl text-center leading-none", isRed ? "text-crimson" : "text-black")}>
+              <div className={cn("text-3xl text-center leading-none", isRed ? "text-crimson" : "text-black")}>
                 {card.suit}
               </div>
-              <div className={cn("text-[10px] sm:text-sm lg:text-base font-bold leading-none rotate-180 self-end", isRed ? "text-crimson" : "text-black")}>
+              <div className={cn("text-xs font-bold leading-none rotate-180 self-end", isRed ? "text-crimson" : "text-black")}>
                 <div>{card.rank}</div>
-                <div className="text-xs sm:text-base lg:text-lg">{card.suit}</div>
+                <div className="text-sm">{card.suit}</div>
               </div>
             </>
           )}

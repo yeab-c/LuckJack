@@ -9,11 +9,11 @@ import { LJButton } from "@/components/luckjack/LJButton";
 
 export const Route = createFileRoute("/game")({
   component: GamePage,
-  head: () => ({ meta: [{ title: "Play — LuckJack" }, { name: "description", content: "Play LuckJack — the suspenseful Blackjack twist." }] }),
+  head: () => ({ meta: [{ title: "Play - LuckJack" }, { name: "description", content: "Play LuckJack, the Blackjack game with a twist." }] }),
 });
 
 function GamePage() {
-  const { balance, phase, resetSession } = useGame();
+  const { balance, phase, resetSession, playAgain } = useGame();
   const broke = balance <= 0 && phase === "betting";
 
   return (
@@ -25,6 +25,10 @@ function GamePage() {
             <div className="font-serif-display text-3xl text-crimson">You're Broke</div>
             <p className="text-card-white/80">Out of chips. Reset the session to keep playing.</p>
             <LJButton variant="gold" size="lg" onClick={resetSession}>Reset Session</LJButton>
+          </div>
+        ) : phase === "result" ? (
+          <div className="text-center py-4">
+            <LJButton variant="gold" size="lg" onClick={playAgain}>Continue to Next Round</LJButton>
           </div>
         ) : phase === "betting" ? (
           <BettingPanel />

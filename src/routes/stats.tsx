@@ -4,7 +4,7 @@ import { useGame } from "@/context/GameContext";
 
 export const Route = createFileRoute("/stats")({
   component: StatsPage,
-  head: () => ({ meta: [{ title: "Stats — LuckJack" }, { name: "description", content: "Your LuckJack gameplay statistics." }] }),
+  head: () => ({ meta: [{ title: "Stats - LuckJack" }, { name: "description", content: "Your LuckJack gameplay statistics." }] }),
 });
 
 function StatsPage() {
